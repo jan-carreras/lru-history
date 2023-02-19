@@ -1,13 +1,14 @@
 package internal
 
 import (
-	"github.com/jan-carreras/lru-history/internal/models"
-	"github.com/jan-carreras/lru-history/internal/storage"
-	"github.com/jan-carreras/lru-history/internal/view"
 	"os"
 	"path"
 	"strings"
 	"testing"
+
+	"github.com/jan-carreras/lru-history/internal/models"
+	"github.com/jan-carreras/lru-history/internal/storage"
+	"github.com/jan-carreras/lru-history/internal/view"
 )
 
 func TestApp_AddToHistory(t *testing.T) {

@@ -1,13 +1,15 @@
+// Package internal defines the app that orchestrates the entire flow of the app
 package internal
 
 import (
 	"errors"
-	"github.com/jan-carreras/lru-history/internal/models"
-	"github.com/jan-carreras/lru-history/internal/storage"
-	"github.com/jan-carreras/lru-history/internal/view"
 	"io"
 	"sort"
 	"strings"
+
+	"github.com/jan-carreras/lru-history/internal/models"
+	"github.com/jan-carreras/lru-history/internal/storage"
+	"github.com/jan-carreras/lru-history/internal/view"
 )
 
 const (
@@ -22,12 +24,14 @@ type runner interface {
 	Run(command models.HistoryLine) error
 }
 
+// App orchestrate all the flows of the application
 type App struct {
 	storage  *storage.Storage
 	renderer renderer
 	runner   runner
 }
 
+// NewApp returns an App
 func NewApp(storage *storage.Storage, renderer renderer, runner runner) *App {
 	return &App{
 		storage:  storage,
@@ -36,10 +40,12 @@ func NewApp(storage *storage.Storage, renderer renderer, runner runner) *App {
 	}
 }
 
+// AddToHistory adds a new command into the History file
 func (a *App) AddToHistory(input io.Reader) error {
 	return a.storage.AddHistoryLine(input)
 }
 
+// History allows to select a command to execute from a list
 func (a *App) History(fromDir string) error {
 	lines, err := a.storage.ReadHistory()
 	if err != nil {

@@ -1,14 +1,16 @@
+// Package main is the "h" command that shows the commands executed in the current path and lets you choose one
 package main
 
 import (
 	"flag"
+	"log"
+	"os"
+	"path"
+
 	"github.com/jan-carreras/lru-history/internal"
 	runner "github.com/jan-carreras/lru-history/internal/run"
 	"github.com/jan-carreras/lru-history/internal/storage"
 	"github.com/jan-carreras/lru-history/internal/view"
-	"log"
-	"os"
-	"path"
 )
 
 func main() {

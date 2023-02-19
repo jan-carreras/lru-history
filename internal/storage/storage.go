@@ -1,14 +1,16 @@
+// Package storage reads/writes the history file
 package storage
 
 import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/gofrs/flock"
-	"github.com/jan-carreras/lru-history/internal/models"
 	"io"
 	"os"
 	"time"
+
+	"github.com/gofrs/flock"
+	"github.com/jan-carreras/lru-history/internal/models"
 )
 
 const (
@@ -16,11 +18,13 @@ const (
 	readFileOptions  = os.O_RDONLY
 )
 
+// Storage abstract the access to the History file safely
 type Storage struct {
 	historyPath string
 	mux         *flock.Flock
 }
 
+// NewStorage returns an Storage
 func NewStorage(historyPath string) *Storage {
 	return &Storage{
 		historyPath: historyPath,
@@ -28,17 +32,18 @@ func NewStorage(historyPath string) *Storage {
 	}
 }
 
+// AddHistoryLine add an entry to the History file
 func (s *Storage) AddHistoryLine(input io.Reader) error {
 	if err := s.mux.Lock(); err != nil {
 		return err
 	}
-	defer s.mux.Unlock()
+	defer func() { _ = s.mux.Unlock() }()
 
 	f, err := os.OpenFile(s.historyPath, writeFileOptions, 0600)
 	if err != nil {
 		return fmt.Errorf("unable to open history file: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	buf := bufio.NewWriter(f)
 	if _, err := io.Copy(buf, input); err != nil {
@@ -48,17 +53,18 @@ func (s *Storage) AddHistoryLine(input io.Reader) error {
 	return buf.Flush()
 }
 
+// ReadHistory read the History file and return all the entries
 func (s *Storage) ReadHistory() ([]models.HistoryLine, error) {
 	if err := s.mux.Lock(); err != nil {
 		return nil, err
 	}
-	defer s.mux.Unlock()
+	defer func() { _ = s.mux.Unlock() }()
 
 	f, err := os.OpenFile(s.historyPath, readFileOptions, 0600)
 	if err != nil {
 		return nil, fmt.Errorf("unable to open history file: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	historyLines := make([]models.HistoryLine, 0)
 

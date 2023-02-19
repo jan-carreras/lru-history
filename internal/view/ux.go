@@ -2,11 +2,12 @@ package view
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/jan-carreras/lru-history/internal/models"
-	"strconv"
-	"strings"
 )
 
 type model struct {
